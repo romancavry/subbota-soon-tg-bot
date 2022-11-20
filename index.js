@@ -23,6 +23,7 @@ bot.on('text', (ctx, next) => {
     anySpeciesWordInMessage,
     anyCatWordInMessage,
     anyVolgaWordInMessage,
+    anyDuckWordInMessage,
   } = checkMessage(serializedMessageText);
 
   if (anySeekWordInMessage) {
@@ -33,6 +34,8 @@ bot.on('text', (ctx, next) => {
     ctx.reply('«КОТ - Коренной Обитатель Тюрьмы». Рома');
   } else if (anyVolgaWordInMessage) {
     ctx.reply('«Волга хуйня по умолчанию». Коля');
+  } else if (anyDuckWordInMessage) {
+    ctx.reply('«Утки это лилипуты переодеты в гражданской форме, мусора называют ещё шпана». Женёк');
   }
 
   next();
