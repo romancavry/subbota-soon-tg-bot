@@ -1,53 +1,30 @@
-import * as dotenv from 'dotenv'
+import * as dotenv from 'dotenv';
 import { Telegraf } from 'telegraf';
 
-import getRandomNumber from './modules/utils/getRandomNumber.js';
-import checkMessage from './modules/utils/checkMessage.js';
-
-import proverbs from './modules/contants/proverbs.js';
+import getQuote from './lib/getQuote.js';
+import proverbs from './lib/proverbs.js';
 
 dotenv.config()
-const { TG_API_TOKEN } = process.env;
 
-const bot = new Telegraf(TG_API_TOKEN);
+const bot = new Telegraf(process.env.TG_API_TOKEN);
 
 bot.on('text', (ctx, next) => {
-  const {
-    message: { text }
-  } = ctx;
+  const quote = getQuote(ctx.message.text);
 
-  const serializedMessageText = text.toLowerCase().split(' ');
-
-  const {
-    anySeekWordInMessage,
-    anySpeciesWordInMessage,
-    anyCatWordInMessage,
-    anyVolgaWordInMessage,
-    anyDuckWordInMessage,
-  } = checkMessage(serializedMessageText);
-
-  if (anySeekWordInMessage) {
-    ctx.reply('«Я максимум один день болею». Данил');
-  } else if (anySpeciesWordInMessage) {
-    ctx.reply('«Цветных и черных...». Дядька Семён');
-  } else if (anyCatWordInMessage) {
-    ctx.reply('«КОТ - Коренной Обитатель Тюрьмы». Рома');
-  } else if (anyVolgaWordInMessage) {
-    ctx.reply('«Волга хуйня по умолчанию». Коля');
-  } else if (anyDuckWordInMessage) {
-    ctx.reply('«Утки это лилипуты переодеты в гражданской форме, мусора называют ещё шпана». Женёк');
+  if (quote) {
+    ctx.reply(quote);
   }
 
   next();
 });
 
-bot.command('aboba', ctx => {
-  const proverbRandomIndex = getRandomNumber({
-    min: 0,
-    max: proverbs.length,
-  });
+bot.command('quote', ctx => {
+  const min = 0;
+  const max = proverbs.length;
 
-  ctx.reply(proverbs[proverbRandomIndex]);
+  const index = Math.floor(Math.random() * (max - min) + min);
+
+  ctx.reply(proverbs[index]);
 });
 
 // Start bot
